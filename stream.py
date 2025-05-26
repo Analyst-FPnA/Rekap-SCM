@@ -374,7 +374,7 @@ if uploaded_file is not None:
         
                 # Load Harga
                 try:
-                    harga = pd.read_excel(f"{tmpdirname}/Penyesuaian IA/bahan/Harga.xlsx", skiprows=4).fillna("").drop(
+                    harga = pd.read_excel(f"{tmpdirname}/bahan/Harga.xlsx", skiprows=4).fillna("").drop(
                         columns={'Kategori Barang', 'Kode Barang', 'Nama Satuan', 'Saldo Awal', 'Masuk', 'Keluar'})
                 except Exception as e:
                     st.error(f"Gagal membaca Harga.xlsx: {e}")
