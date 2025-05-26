@@ -368,107 +368,107 @@ if uploaded_file is not None:
                                     all_dfs.append(df)
                                 except Exception as e:
                                     st.error(f"Error processing {file_info.filename}: {e}")
-        
-            if all_dfs:
-                final_df = pd.concat(all_dfs, ignore_index=True)
-        
-                # Load Harga
-                try:
-                    harga = pd.read_excel(f"{tmpdirname}/bahan/Harga.xlsx", skiprows=4).fillna("").drop(
-                        columns={'Kategori Barang', 'Kode Barang', 'Nama Satuan', 'Saldo Awal', 'Masuk', 'Keluar'})
-                except Exception as e:
-                    st.error(f"Gagal membaca Harga.xlsx: {e}")
-                    st.stop()
-        
-                harga = harga[~harga['Nama Barang'].isin(['Total Nama Barang', ''])].rename(
-                    columns={'Saldo Akhir': 'Kuantitas', 'Unnamed: 14': 'Nilai'})
-                harga = harga[harga['Nama Barang'].notna()]
-                harga = harga.loc[:, ~harga.columns.str.startswith('Unnamed')]
-        
-                def safe_divide(row):
+           
+                if all_dfs:
+                    final_df = pd.concat(all_dfs, ignore_index=True)
+            
+                    # Load Harga
                     try:
-                        return abs(row['Nilai'] / row['Kuantitas'])
-                    except:
-                        return 0
-        
-                harga['Harga'] = harga.apply(safe_divide, axis=1)
-        
-                # Cari folder REKAP PENYESUAIAN STOK (IA) secara dinamis
-                rekap_path = ""
-                for root, dirs, files in os.walk(tmpdirname):
-                    for dir_name in dirs:
-                        if dir_name.strip().lower() == "rekap penyesuaian stok (ia)":
-                            rekap_path = os.path.join(root, dir_name)
-                            break
-                    if rekap_path:
-                        break
-        
-                if not rekap_path:
-                    st.error("Folder 'REKAP PENYESUAIAN STOK (IA)' tidak ditemukan di dalam ZIP.")
-                    st.stop()
-        
-                # Gabungkan semua file dari folder tersebut
-                all_files = []
-                for root, dirs, files in os.walk(rekap_path):
-                    for file in files:
-                        if file.endswith('.xlsx') or file.endswith('.xls'):
-                            all_files.append(os.path.join(root, file))
-        
-                combined_df = pd.DataFrame()
-                for file in all_files:
-                    try:
-                        df = pd.read_excel(file)
-                        combined_df = pd.concat([combined_df, df], ignore_index=True)
+                        harga = pd.read_excel(f"{tmpdirname}/bahan/Harga.xlsx", skiprows=4).fillna("").drop(
+                            columns={'Kategori Barang', 'Kode Barang', 'Nama Satuan', 'Saldo Awal', 'Masuk', 'Keluar'})
                     except Exception as e:
-                        print(f"Gagal membaca file: {file} karena {e}")
-        
-                def format_gudang(g):
-                    match = re.match(r"(\d+)(?:\.\d+)?-.*\((\w+)\)", str(g))
-                    if match:
-                        return f"{match.group(1)}.{match.group(2)}"
-                    return g
-        
-                combined_df['Gudang'] = combined_df['Gudang'].apply(format_gudang)
-        
-                final_df['Kode'] = final_df['Kode'].astype(str)
-                combined_df['Kode'] = combined_df['Kode'].astype(str)
-        
-                final_df = final_df.merge(
-                    combined_df[['Kode', 'Gudang', 'Kuantitas']],
-                    on=['Kode', 'Gudang'],
-                    how='left'
-                )
-                final_df.rename(columns={'Kuantitas': 'REKAP'}, inplace=True)
-                final_df['Kts.'] = final_df['Kts.'].astype(int)
-                final_df['REKAP'] = final_df['REKAP'].astype(int)
-                final_df['Total Biaya'] = final_df['Total Biaya'].astype(int)
-        
-                def selisih(row):
-                    try:
-                        return row['REKAP'] - row['Kts.']
-                    except:
-                        return 0
-        
-                final_df['SELISIH'] = final_df.apply(selisih, axis=1)
-        
-                final_df['Nama Barang'] = final_df['Nama Barang'].astype(str)
-                harga['Nama Barang'] = harga['Nama Barang'].astype(str)
-        
-                final_df = final_df.merge(
-                    harga[['Nama Barang', 'Harga']],
-                    on='Nama Barang',
-                    how='left'
-                )
-        
-                final_df['Harga'] = final_df['Harga'].astype(int)
-        
-                st.download_button(
-                    label="Download Gabungan Excel",
-                    data=to_excel(final_df),
-                    file_name=f'Penyesuaian IA Combine_{get_current_time_gmt7()}.xlsx',
-                    mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-                )
-                
+                        st.error(f"Gagal membaca Harga.xlsx: {e}")
+                        st.stop()
+            
+                    harga = harga[~harga['Nama Barang'].isin(['Total Nama Barang', ''])].rename(
+                        columns={'Saldo Akhir': 'Kuantitas', 'Unnamed: 14': 'Nilai'})
+                    harga = harga[harga['Nama Barang'].notna()]
+                    harga = harga.loc[:, ~harga.columns.str.startswith('Unnamed')]
+            
+                    def safe_divide(row):
+                        try:
+                            return abs(row['Nilai'] / row['Kuantitas'])
+                        except:
+                            return 0
+            
+                    harga['Harga'] = harga.apply(safe_divide, axis=1)
+            
+                    # Cari folder REKAP PENYESUAIAN STOK (IA) secara dinamis
+                    rekap_path = ""
+                    for root, dirs, files in os.walk(tmpdirname):
+                        for dir_name in dirs:
+                            if dir_name.strip().lower() == "rekap penyesuaian stok (ia)":
+                                rekap_path = os.path.join(root, dir_name)
+                                break
+                        if rekap_path:
+                            break
+            
+                    if not rekap_path:
+                        st.error("Folder 'REKAP PENYESUAIAN STOK (IA)' tidak ditemukan di dalam ZIP.")
+                        st.stop()
+            
+                    # Gabungkan semua file dari folder tersebut
+                    all_files = []
+                    for root, dirs, files in os.walk(rekap_path):
+                        for file in files:
+                            if file.endswith('.xlsx') or file.endswith('.xls'):
+                                all_files.append(os.path.join(root, file))
+            
+                    combined_df = pd.DataFrame()
+                    for file in all_files:
+                        try:
+                            df = pd.read_excel(file)
+                            combined_df = pd.concat([combined_df, df], ignore_index=True)
+                        except Exception as e:
+                            print(f"Gagal membaca file: {file} karena {e}")
+            
+                    def format_gudang(g):
+                        match = re.match(r"(\d+)(?:\.\d+)?-.*\((\w+)\)", str(g))
+                        if match:
+                            return f"{match.group(1)}.{match.group(2)}"
+                        return g
+            
+                    combined_df['Gudang'] = combined_df['Gudang'].apply(format_gudang)
+            
+                    final_df['Kode'] = final_df['Kode'].astype(str)
+                    combined_df['Kode'] = combined_df['Kode'].astype(str)
+            
+                    final_df = final_df.merge(
+                        combined_df[['Kode', 'Gudang', 'Kuantitas']],
+                        on=['Kode', 'Gudang'],
+                        how='left'
+                    )
+                    final_df.rename(columns={'Kuantitas': 'REKAP'}, inplace=True)
+                    final_df['Kts.'] = final_df['Kts.'].astype(int)
+                    final_df['REKAP'] = final_df['REKAP'].astype(int)
+                    final_df['Total Biaya'] = final_df['Total Biaya'].astype(int)
+            
+                    def selisih(row):
+                        try:
+                            return row['REKAP'] - row['Kts.']
+                        except:
+                            return 0
+            
+                    final_df['SELISIH'] = final_df.apply(selisih, axis=1)
+            
+                    final_df['Nama Barang'] = final_df['Nama Barang'].astype(str)
+                    harga['Nama Barang'] = harga['Nama Barang'].astype(str)
+            
+                    final_df = final_df.merge(
+                        harga[['Nama Barang', 'Harga']],
+                        on='Nama Barang',
+                        how='left'
+                    )
+            
+                    final_df['Harga'] = final_df['Harga'].astype(int)
+            
+                    st.download_button(
+                        label="Download Gabungan Excel",
+                        data=to_excel(final_df),
+                        file_name=f'Penyesuaian IA Combine_{get_current_time_gmt7()}.xlsx',
+                        mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                    )
+                   
         if selected_option == 'REKAP DATA BOM-DEVIASI':
             with tempfile.TemporaryDirectory() as tmpdirname:
                 with zipfile.ZipFile(uploaded_file, 'r') as zip_ref:
