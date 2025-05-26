@@ -335,7 +335,7 @@ if uploaded_file is not None:
         
                     all_dfs = []
                     for file_info in zip_ref.infolist():
-                        if if file_info.filename.startswith('penyesuaian') and file_info.filename.endswith(('.xlsx', '.xls', '.csv')):
+                        if file_info.filename.startswith('penyesuaian') and file_info.filename.endswith(('.xlsx', '.xls', '.csv')):
                             with zip_ref.open(file_info.filename) as file:
                                 try:
                                     if file_info.filename.endswith('.csv'):
