@@ -439,8 +439,8 @@ if uploaded_file is not None:
                         how='left'
                     )
                     final_df.rename(columns={'Kuantitas': 'REKAP'}, inplace=True)
-                    final_df['Kts.'] = final_df['Kts.'].astype(int)
-                    final_df['REKAP'] = final_df['REKAP'].astype(int)
+                    final_df['Kts.'] = final_df['Kts.'].fillna(0).astype(int)
+                    final_df['REKAP'] = final_df['REKAP'].fillna(0).astype(int)
                     final_df['Total Biaya'] = final_df['Total Biaya'].astype(int)
             
                     def selisih(row):
