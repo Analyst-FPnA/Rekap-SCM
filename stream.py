@@ -551,6 +551,9 @@ if uploaded_file is not None:
                 data['QTY COM'] = data['QTY BOM'] + data['QTY DEVIASI'] + data['QTY USAGE']
                 data['NOMINAL COM'] = data['NOMINAL BOM'] + data['NOMINAL DEVIASI'] + data['NOMINAL USAGE']
                 data = data.merge(omset, on='Nama Cabang', how='left').merge(nb[['Nama Barang','NOMINAL BIANG PER GRAM']], on='Nama Barang',how='left').rename(columns={'OMSET':'OMSET 1'})
+                omset['Nama Barang'] = 'ADONAN PANGSIT (V.20)'
+                data = data.merge(pd.concat([omset,omset.replace('ADONAN PANGSIT (V.20)','KERTAS BAKPAO 10.5 CM (V.20)')]), on=['Nama Cabang','Nama Barang'], how='left')
+                data.loc[:,['OMSET','OMSET 1']]= data[['OMSET','OMSET 1']].fillna(0)
                 data['QTY WASTE + SUSUT'] = data['QTY WASTE'] + data['QTY SUSUT']
                 data['% WASTE + SUSUT'] = data['QTY WASTE + SUSUT']/data['QTY BOM']
                 data['NOMINAL BUMBU'] = data['NOMINAL BIANG PER GRAM']*data['QTY BOM']
