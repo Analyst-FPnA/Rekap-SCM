@@ -553,7 +553,7 @@ if uploaded_file is not None:
                 data = data.merge(omset, on='Nama Cabang', how='left').merge(nb[['Nama Barang','NOMINAL BIANG PER GRAM']], on='Nama Barang',how='left').rename(columns={'OMSET':'OMSET 1'})
                 omset['Nama Barang'] = 'ADONAN PANGSIT (V.20)'
                 data = data.merge(pd.concat([omset,omset.replace('ADONAN PANGSIT (V.20)','KERTAS BAKPAO 10.5 CM (V.20)')]), on=['Nama Cabang','Nama Barang'], how='left')
-                data.loc[:,['OMSET','OMSET 1']]= data[['OMSET','OMSET 1']].fillna(0)
+                #data.loc[:,['OMSET','OMSET 1']]= data[['OMSET','OMSET 1']].fillna(0)
                 data['QTY WASTE + SUSUT'] = data['QTY WASTE'] + data['QTY SUSUT']
                 data['% WASTE + SUSUT'] = data['QTY WASTE + SUSUT']/data['QTY BOM']
                 data['NOMINAL BUMBU'] = data['NOMINAL BIANG PER GRAM']*data['QTY BOM']
@@ -561,7 +561,7 @@ if uploaded_file is not None:
                 data = data[['Akun Penyesuaian Persediaan','STATUS','Nama Cabang','Nama Barang','SATUAN',
                       'QTY BOM','QTY COM','QTY DEVIASI', 'QTY USAGE','QTY WASTE', 'QTY SUSUT','QTY TRIAL','QTY LOSS SURPUS',
                       'NOMINAL BOM','NOMINAL COM','NOMINAL DEVIASI','NOMINAL USAGE', 'NOMINAL WASTE', 'NOMINAL SUSUT', 'NOMINAL TRIAL','NOMINAL LOSS SURPUS',
-                      'OMSET 1','Harga','QTY WASTE + SUSUT','% WASTE + SUSUT','NOMINAL BIANG PER GRAM','NOMINAL BUMBU','NOMINAL BOM2'
+                      'OMSET','OMSET 1','Harga','QTY WASTE + SUSUT','% WASTE + SUSUT','NOMINAL BIANG PER GRAM','NOMINAL BUMBU','NOMINAL BOM2'
                     ]].replace([np.inf, -np.inf, np.nan], 0).merge(db_area, on='Nama Cabang', how='left').merge(db_pkg.drop_duplicates(), on='Nama Cabang',how='left').fillna('').rename(
                         columns={'Nama Cabang':'RESTO','Nama Barang':'NAMA BAHAN','SATUAN':'Satuan'})
 
