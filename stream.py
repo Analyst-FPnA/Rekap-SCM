@@ -393,7 +393,7 @@ if uploaded_file is not None:
             
                     harga['Harga'] = harga.apply(safe_divide, axis=1)
             
-                    # Cari folder REKAP PENYESUAIAN STOK (IA) secara dinamis
+                    # Cari folder REKAP PENYESUAIAN STOK (IA)
                     rekap_path = ""
                     for root, dirs, files in os.walk(tmpdirname):
                         for dir_name in dirs:
@@ -427,15 +427,14 @@ if uploaded_file is not None:
                         if match:
                             return f"{match.group(1)}.{match.group(2)}"
                         return g
-                     
+                                                  
+                    combined_df['Gudang'] = combined_df['Gudang'].apply(format_gudang)
+                 
                     if 'Tipe Penyesuaian' in combined_df.columns:
                         mask_penambahan2 = combined_df['Tipe Penyesuaian'].str.lower() == 'penambahan'
-                        for col in ['Kuantitas']:
-                            if col in combined_df.columns:
-                                combined_df.loc[mask_penambahan2, col] = combined_df.loc[mask_penambahan2, col] * -1
+                        if 'Kuantitas' in combined_df.columns:
+                            combined_df.loc[mask_penambahan2, 'Kuantitas'] = combined_df.loc[mask_penambahan2, 'Kuantitas'] * -1  
                              
-                    combined_df['Gudang'] = combined_df['Gudang'].apply(format_gudang)
-            
                     final_df['Kode'] = final_df['Kode'].astype(str)
                     combined_df['Kode'] = combined_df['Kode'].astype(str)                
             
