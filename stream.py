@@ -460,11 +460,13 @@ if uploaded_file is not None:
                         how='left'
                     )
             
-                    final_df['Harga'] = final_df['Harga'].astype(int)
-            
+                    final_df['Harga'] = final_df['Harga'].astype(float)
+                    final_df['Harga Sistem'] = final_df['Total Biaya'] / final_df['Kts.']
+                    final_df['Selisih Harga'] = (final_df['Harga'] - final_df['Harga Sistem']).replace([np.inf, -np.inf, np.nan],0)
                     st.download_button(
                         label="Download Gabungan Excel",
-                        data=to_excel(final_df),
+                        data=to_excel(final_df.rename(columns={'REKAP':'Inputan Seharusnya','SELISIH':'Selisih Input',
+                                                               'Harga':'Harga 41.09'})),
                         file_name=f'Penyesuaian IA Combine_{get_current_time_gmt7()}.xlsx',
                         mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                     )
