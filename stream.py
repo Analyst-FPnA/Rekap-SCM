@@ -463,7 +463,7 @@ if uploaded_file is not None:
                     )
             
                     final_df['Harga'] = final_df['Harga'].astype(float) 
-                    final_df['Selisih Harga'] = (final_df['Harga'] - final_df['Harga Sistem']).replace([np.inf, -np.inf, np.nan],0)
+                    final_df['Selisih Harga'] = (final_df['Harga Sistem'] - final_df['Harga']).replace([np.inf, -np.inf, np.nan],0)
                     st.download_button(
                         label="Download Gabungan Excel",
                         data=to_excel(final_df.rename(columns={'REKAP':'Inputan Seharusnya','SELISIH':'Selisih Input',
