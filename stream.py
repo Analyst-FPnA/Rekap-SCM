@@ -427,16 +427,17 @@ if uploaded_file is not None:
                         if match:
                             return f"{match.group(1)}.{match.group(2)}"
                         return g
-            
+                     
+                    if 'Tipe Penyesuaian' in combined_df.columns:
+                        mask_penambahan2 = combined_df['Tipe Penyesuaian'].str.lower() == 'penambahan'
+                        for col in ['Kuantitas']:
+                            if col in combined_df.columns:
+                                combined_df.loc[mask_penambahan2, col] = combined_df.loc[mask_penambahan2, col] * -1
+                             
                     combined_df['Gudang'] = combined_df['Gudang'].apply(format_gudang)
             
                     final_df['Kode'] = final_df['Kode'].astype(str)
-                    combined_df['Kode'] = combined_df['Kode'].astype(str)
-                    if 'Tipe Penyesuaian' in final_df.columns:
-                        mask_penambahan2 = final_df['Tipe Penyesuaian'].str.lower() == 'penambahan'
-                        for col in ['Kuantitas']:
-                            if col in final_df.columns:
-                                final_df.loc[mask_penambahan2, col] = final_df.loc[mask_penambahan, col] * -1                 
+                    combined_df['Kode'] = combined_df['Kode'].astype(str)                
             
                     final_df = final_df.merge(
                         combined_df[['Kode', 'Gudang', 'Kuantitas']],
