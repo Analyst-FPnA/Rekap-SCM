@@ -454,14 +454,15 @@ if uploaded_file is not None:
                     final_df['Nama Barang'] = final_df['Nama Barang'].astype(str)
                     harga['Nama Barang'] = harga['Nama Barang'].astype(str)
             
+
+                    final_df['Harga Sistem'] = final_df['Total Biaya'] / final_df['Kts.']
                     final_df = final_df.merge(
                         harga[['Nama Barang', 'Harga']],
                         on='Nama Barang',
                         how='left'
                     )
             
-                    final_df['Harga'] = final_df['Harga'].astype(float)
-                    final_df['Harga Sistem'] = final_df['Total Biaya'] / final_df['Kts.']
+                    final_df['Harga'] = final_df['Harga'].astype(float) 
                     final_df['Selisih Harga'] = (final_df['Harga'] - final_df['Harga Sistem']).replace([np.inf, -np.inf, np.nan],0)
                     st.download_button(
                         label="Download Gabungan Excel",
