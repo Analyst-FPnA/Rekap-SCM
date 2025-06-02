@@ -49,6 +49,12 @@ if selected_option == 'REKAP MENTAH':
     st.write('Upload file format *zip')
 if selected_option == 'REKAP PENYESUAIAN INPUTAN IA':
     st.write('Upload file format *zip')
+    st.info("""
+**File Upload** (*zip*):
+- `[Nama file].zip`
+    - `4217_....xlsx` → *(Raw Data GIS)*
+    - `SALDO_SO.xlsx` → kolom: `{CABANG, NAMA BARANG, #Hasil Stock Opname}`
+""")
 if selected_option == 'REKAP DATA 42.02':
     st.write('Upload file format *zip')
 if selected_option == 'REKAP DATA BOM-DEVIASI':
