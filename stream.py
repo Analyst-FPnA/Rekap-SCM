@@ -13,7 +13,10 @@ from xlsxwriter import Workbook
 import tempfile
 import re
 import io
- 
+
+
+st.error("Platform web ini sudah tidak lagi menerima pembaruan dan akan dinonaktifkan pada 20/06/2025. Segera gunakan aplikasi versi offline (DEX) untuk mengakses fitur dan data terbaru.")
+
 def load_excel(file_path):
     with open(file_path, 'rb') as file:
         model = pd.read_excel(file, engine='openpyxl')
